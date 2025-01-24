@@ -2,7 +2,7 @@ import IUser from "./IUser";
 
 interface IAppointment {
   id: number;
-  userid: number; //IUser["id"];
+  userid: IUser["id"];
   date: Date;
   time: number;
   status: "active" | "cancelled";
