@@ -1,12 +1,13 @@
-//import IdType from "./EnumIdType";
+import ICredential from "./ICredentials";
 
 interface IUser {
   id: number;
   name: string;
-  idType: string;
-  personalId: number;
   email: string;
-  active: boolean;
+  birthday: string;
+  nDniType: string;
+  nDni: number;
+  credentialsId: ICredential["id"];
 }
 
 export default IUser;

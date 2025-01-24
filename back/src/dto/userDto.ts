@@ -1,10 +1,8 @@
-import idType from "../interface/EnumIdType";
-
 interface UserDto {
   name: string;
-  idType: idType;
-  personalId: number;
   email: string;
-  active: boolean;
+  birthday: string;
+  nDniType: string;
+  nDni: number;
 }
 export default UserDto;

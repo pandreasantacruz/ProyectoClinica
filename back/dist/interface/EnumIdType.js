@@ -1,3 +1,4 @@
+"use strict";
 // enum idType {
 //   CEDULA = "cedula",
 //   TARJETAIDENTIDAD = "tarjetaidentidad",
