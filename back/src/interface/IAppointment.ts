@@ -2,10 +2,10 @@ import IUser from "./IUser";
 
 interface IAppointment {
   id: number;
-  userid: IUser["id"];
-  date: Date;
-  time: number;
-  status: "active" | "cancelled";
+  userid: string;
+  date: string;
+  time: string;
+  status: string; //HACER EMUT
   medicalHistory: string;
   reasonConsultation: string;
 }

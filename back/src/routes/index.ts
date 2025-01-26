@@ -1,20 +1,10 @@
 import { Router } from "express";
-import {
-  createUser,
-  getUser,
-  getUserById,
-} from "../controllers/userController";
+import { userRouter } from "./usersRouter";
+import appointmentRouter from "./appointmentRoutes";
 
 const router: Router = Router();
 
-router.post("/users/register", createUser);
-router.get("/users", getUser);
-router.get("/users/:id", getUserById);
-router.post("users/login");
-// appointments
-router.post("/appointments/schedule");
-router.get("/appointments");
-router.get("/appointments/:id");
-router.put("/appointments/cancel");
+router.use("/users", userRouter);
+router.use("/appointments", appointmentRouter);
 
 export default router;

@@ -1,47 +1,49 @@
-import ICredential from "../interface/ICredentials";
-const credentials: ICredential[] = [
-  { id: 5, username: "Hola", newPassword: "SOYPaula" },
-  { id: 2, username: "exampleUser", newPassword: "examplePassword" },
-  { id: 3, username: "exampleUser", newPassword: "examplePassword" },
-];
-let id: number = 4;
-const randomNumber = Math.floor(Math.random() * 5000);
+import ICredentialDto from "../dto/credentialDto";
+import { AppDataSource } from "../config/data-source";
+import { Credentials } from "../entities/credentials";
+
 export const createUsernPassword = async (
-  credentialsData: ICredential
-): Promise<ICredential["id"]> => {
+  userData: ICredentialDto
+): Promise<Credentials["id"]> => {
   try {
-    id++;
-    const newCredentials: ICredential = {
-      id,
-      username: credentialsData.username.toUpperCase(),
-      newPassword: `${credentialsData.newPassword}${randomNumber}`,
-    };
+    const newPassword = Math.floor(Math.random() * 500)
+      .toString(36)
+      .slice(-8);
 
-    credentials.push(newCredentials);
+    const newCredentials = AppDataSource.getRepository(Credentials).create({
+      ...userData,
+      newPassword: newPassword,
+    });
 
+    await AppDataSource.getRepository(Credentials).save(newCredentials); // Guarda el usuario en la base de datos
     return newCredentials.id;
   } catch (error) {
-    console.error("createUsernPassword", error);
+    console.error("Error at create User n Password", error);
     throw error;
   }
 };
 
-export const getIdCredentials = (
+export const getIdCredentials = async (
   username: string,
   password: string
-): ICredential["id"] | null => {
+): Promise<Credentials["id"] | null> => {
   try {
-    const userVerification = credentials.find(
-      (user) => user.username === username
-    );
-    if (userVerification && userVerification.newPassword === password) {
-      return userVerification.id;
+    const credentials = await AppDataSource.getRepository(
+      Credentials
+    ).findOneBy({
+      username,
+    });
+    if (credentials) {
+      if (credentials.newPassword === password) {
+        return credentials.id;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
     }
-    return null;
   } catch (error) {
     console.error("getIdCredentials", error);
     throw error;
   }
 };
-
-console.log(getIdCredentials("Hola", "SOYPaula"), "Pruebilla");

@@ -4,5 +4,7 @@ interface UserDto {
   birthday: string;
   nDniType: string;
   nDni: number;
+  username: string;
+  password: string;
 }
 export default UserDto;

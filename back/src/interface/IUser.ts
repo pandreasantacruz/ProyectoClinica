@@ -7,7 +7,6 @@ interface IUser {
   birthday: string;
   nDniType: string;
   nDni: number;
-  credentialsId: ICredential["id"];
 }
 
 export default IUser;

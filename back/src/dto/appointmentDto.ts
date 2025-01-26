@@ -1,7 +1,7 @@
 interface AppointmentDto {
-  date: Date;
-  time: number;
-  status: "active" | "cancelled";
+  date: string;
+  time: string;
+  status: string;
   medicalHistory: string;
   reasonConsultation: string;
 }
