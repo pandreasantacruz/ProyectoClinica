@@ -1,4 +1,4 @@
-import IUser from "../interface/IUser";
+import { IUser } from "../interface/IUser";
 import UserDto from "../dto/userDto";
 import { error } from "console";
 import { AppDataSource } from "../config/data-source";
@@ -8,7 +8,7 @@ import { promises } from "dns";
 export const createUserService = async (userData: UserDto): Promise<User> => {
   try {
     const user = AppDataSource.getRepository(User).create(userData);
-    await AppDataSource.getRepository(User).save(user); // Guarda el usuario en la base de datos
+    await AppDataSource.getRepository(User).save(user);
     return user;
   } catch (error) {
     console.log("Error CreateUserService", error);
@@ -56,5 +56,24 @@ export const getUserByIdService = async (
   } catch (error) {
     console.log("Error Get User By Id Service", error);
     throw error;
+  }
+};
+export const loginService = async (email: string, password: string) => {
+  try {
+    const user = await AppDataSource.getRepository(User).findOneBy({ email });
+
+    if (!user) {
+      return { error: "User not found", statusCode: 404 };
+    }
+
+    if (user.credentials.newPassword !== password) {
+      return { error: "Incorrect password", statusCode: 400 };
+    }
+
+    return user;
+  } catch (error) {
+    console.log("Error en el login:", error);
+
+    return { error: "Error to login", statusCode: 400 };
   }
 };

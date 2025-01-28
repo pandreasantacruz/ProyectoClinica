@@ -1,9 +1,10 @@
+import { User } from "../entities/user";
 interface AppointmentDto {
-  date: string;
+  date: Date;
   time: string;
-  status: string;
   medicalHistory: string;
   reasonConsultation: string;
+  userId: number;
 }
 
 export default AppointmentDto;

@@ -1,4 +1,4 @@
-enum nDniType {
+export enum nDniType {
   Registrocivil = "Registro civil",
   Tarjetaidentidad = "Tarjeta identidad",
   Cédulaciudadanía = "Cédula ciudadanía",

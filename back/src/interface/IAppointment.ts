@@ -1,13 +1,13 @@
-import IUser from "./IUser";
+import { User } from "../entities/user";
+import status from "./emutStatus";
 
 interface IAppointment {
   id: number;
-  userid: string;
-  date: string;
+  date: Date;
   time: string;
-  status: string; //HACER EMUT
+  status: status;
   medicalHistory: string;
   reasonConsultation: string;
+  userId: number;
 }
-
 export default IAppointment;

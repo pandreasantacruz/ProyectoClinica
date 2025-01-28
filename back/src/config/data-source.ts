@@ -10,6 +10,7 @@ export const AppDataSource = new DataSource({
   username: "postgres",
   password: "Jack92102371153.",
   database: "mod3",
+  //dropSchema: true, //para borrar base de datos cuando este en true
   synchronize: true,
   logging: true,
   entities: [User, Appointments, Credentials],

@@ -1,4 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Credentials } from "./credentials";
+import { Appointments } from "./appointments";
+import { nDniType } from "../interface/emunbDniType";
 
 @Entity({ name: "users" })
 export class User {
@@ -10,15 +20,24 @@ export class User {
   })
   name: string;
 
-  @Column()
+  @Column({ unique: true })
+  //@isEmail()
   email: string;
 
-  @Column({})
-  birthday: string;
+  @Column({ type: "date" })
+  birthday: Date;
 
-  @Column()
-  nDniType: string;
-
-  @Column()
+  @Column({
+    type: "enum",
+    enum: nDniType,
+  })
+  @Column({ unique: true })
   nDni: number;
+
+  @OneToOne(() => Credentials)
+  @JoinColumn()
+  credentials: Credentials;
+
+  @OneToMany(() => Appointments, (appointments) => appointments.user)
+  appointments: Appointments[];
 }

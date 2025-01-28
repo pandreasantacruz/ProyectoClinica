@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import AppointmentDto from "../dto/appointmentDto";
 import {
   getAppointmentsService,
   getAppointmentByIdService,
@@ -11,36 +12,38 @@ export const createAppointment = async (req: Request, res: Response) => {
   try {
     const {
       id,
-      userid,
       date,
       time,
       status,
       medicalHistory,
       reasonConsultation,
+      userId,
     } = req.body;
-    const dataAppointment: Appointments = {
-      id,
-      userid,
+    const dataAppointment: AppointmentDto = {
       date,
       time,
-      status,
       medicalHistory,
       reasonConsultation,
+      userId,
     };
     const newAppointment = await createAppointmentService(dataAppointment);
-    res.status(201).json(newAppointment);
+    res
+      .status(200)
+      .json({ message: "Appointment created successfully", newAppointment });
   } catch (error) {
     console.log("Error Controller Create Appointment", error);
-    res.status(500).json({ message: "Error creating appointment." });
+    res.status(400).json({ message: "Error creating appointment.", error });
   }
 };
 export const getAppointments = async (req: Request, res: Response) => {
   try {
     const appointments: Appointments[] = await getAppointmentsService();
-    res.status(200).json(appointments);
+    res
+      .status(200)
+      .json({ message: "Appointments retrieved successfully", appointments });
   } catch (error) {
-    console.log("Error Controller getUser", error);
-    throw error;
+    console.log("Error Controller get User", error);
+    res.status(404).json({ message: "Appointments not found", error });
   }
 };
 export const getAppointmentById = async (req: Request, res: Response) => {
@@ -48,10 +51,11 @@ export const getAppointmentById = async (req: Request, res: Response) => {
     const appointmentIdParam = req.params.id; //Obtener el userId desde los parámetros de la ruta
     const appointmentId = Number(appointmentIdParam); //convertirlo en un número
     const appointment = await getAppointmentByIdService(appointmentId); // Llamar a la función con el id
-    res.status(200).json(appointment);
+    res
+      .status(200)
+      .json({ message: "Appointment retrieved successfully", appointment });
   } catch (error) {
-    console.log("Error Get Appointment By Id", error);
-    throw error;
+    res.status(404).json({ message: "Appointment not found", error });
   }
 };
 export const cancelAppointmentController = async (
@@ -77,7 +81,7 @@ export const cancelAppointmentController = async (
     res.status(404).json({ message: "Appointment not found" });
   } catch (error) {
     console.log("Error Cancelling Appointment ", error);
-    res.status(500).json({
+    res.status(400).json({
       message: "An error occurred while cancelling the appointment",
       error,
     });
