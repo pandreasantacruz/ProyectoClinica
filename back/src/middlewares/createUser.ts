@@ -5,7 +5,7 @@ export const createUserValidator = (
   res: Response,
   next: NextFunction
 ): void => {
-  const { name, email, nDniType, nDni, birthday, username, password } =
+  const { name, email, nDniType, nDni, birthday, username, newPassword } =
     req.body;
 
   if (
@@ -15,7 +15,7 @@ export const createUserValidator = (
     !nDni ||
     !birthday ||
     !username ||
-    !password
+    !newPassword
   ) {
     res.status(400).json({ message: "All fields are required." });
   }

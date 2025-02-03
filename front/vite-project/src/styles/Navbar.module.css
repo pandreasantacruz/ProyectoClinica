@@ -1,0 +1,10 @@
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.navButton {
+  width: 100px;
+  height: 40px;
+  border-radius: 10px;
+}

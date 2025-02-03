@@ -1,6 +1,7 @@
 interface CredentialDto {
   username: string;
-  password: string;
+  newPassword: string;
+  userId: number;
 }
 
 export default CredentialDto;

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { createAppointmentMiddleware } from "../middlewares/createAppMiddleware";
 import {
   createAppointment,
   getAppointments,
@@ -8,7 +9,11 @@ import {
 
 const appointmentRouter: Router = Router();
 
-appointmentRouter.post("/schedule", createAppointment);
+appointmentRouter.post(
+  "/schedule",
+  createAppointmentMiddleware,
+  createAppointment
+);
 appointmentRouter.get("/", getAppointments);
 appointmentRouter.get("/:id", getAppointmentById);
 appointmentRouter.put("/cancel/:id", cancelAppointmentController);

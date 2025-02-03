@@ -1,15 +1,16 @@
 import { DataSource } from "typeorm";
+import { HOST, PORT_PG, USERNAME, PASSWORD, DATABASE } from "./envs";
 import { User } from "../entities/user";
 import { Appointments } from "../entities/appointments";
 import { Credentials } from "../entities/credentials";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "postgres",
-  password: "Jack92102371153.",
-  database: "mod3",
+  host: HOST,
+  port: Number(PORT_PG),
+  username: USERNAME,
+  password: PASSWORD,
+  database: DATABASE,
   //dropSchema: true, //para borrar base de datos cuando este en true
   synchronize: true,
   logging: true,

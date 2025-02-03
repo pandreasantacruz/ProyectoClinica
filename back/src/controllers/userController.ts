@@ -5,6 +5,7 @@ import {
   getUserByIdService,
   loginService,
 } from "../service/user";
+import { saveCredentials } from "../service/credentialService";
 import { User } from "../entities/user";
 
 export const createUser = async (
@@ -12,7 +13,7 @@ export const createUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { name, email, birthday, nDniType, nDni, username, password } =
+    const { name, email, birthday, nDniType, nDni, username, newPassword } =
       req.body;
     const newUser: User = await createUserService({
       name,
@@ -21,9 +22,16 @@ export const createUser = async (
       nDniType,
       nDni,
       username,
-      password,
+      newPassword,
     });
-    res.status(201).json({ message: "User created successfully", newUser });
+    const newCredentials = await saveCredentials({
+      username,
+      newPassword,
+      userId: newUser.id,
+    });
+    res
+      .status(201)
+      .json({ message: "User created successfully", newUser, newCredentials });
   } catch (error) {
     console.log("Error Controller createUser", error);
     res.status(400).json({ message: "User could not be registered", error });
@@ -59,9 +67,14 @@ export const loginController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, password } = req.body;
-    const user = await loginService(email, password);
-
+    const { email, newPassword } = req.body;
+    const user = await loginService(email, newPassword);
+    if (!user) {
+      res.status(404).json({
+        message: "Invalid credentials or user not found.",
+      });
+      return;
+    }
     res.status(200).json({
       message: "Login Susccesful",
       user,

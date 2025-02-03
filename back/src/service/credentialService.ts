@@ -2,6 +2,16 @@ import ICredentialDto from "../dto/credentialDto";
 import { AppDataSource } from "../config/data-source";
 import { Credentials } from "../entities/credentials";
 
+export const saveCredentials = async (userData: ICredentialDto) => {
+  try {
+    const newCredentials =
+      AppDataSource.getRepository(Credentials).create(userData);
+    await AppDataSource.getRepository(Credentials).save(newCredentials);
+  } catch (error) {
+    console.error("Error at save credentials", error);
+    throw error;
+  }
+};
 export const createUsernPassword = async (
   userData: ICredentialDto
 ): Promise<Credentials["id"]> => {

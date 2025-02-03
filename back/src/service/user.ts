@@ -11,6 +11,9 @@ export const createUserService = async (userData: UserDto): Promise<User> => {
     await AppDataSource.getRepository(User).save(user);
     return user;
   } catch (error) {
+    if ((error as any).code === "23505") {
+      throw new Error("Email is been use");
+    }
     console.log("Error CreateUserService", error);
     throw error;
   }
@@ -65,12 +68,14 @@ export const loginService = async (email: string, password: string) => {
     if (!user) {
       return { error: "User not found", statusCode: 404 };
     }
-
+    if (!user.credentials || !user.credentials.newPassword) {
+      return { error: "User credentials not set", statusCode: 400 };
+    }
     if (user.credentials.newPassword !== password) {
       return { error: "Incorrect password", statusCode: 400 };
     }
 
-    return user;
+    return { message: "User Log in succesfully", user };
   } catch (error) {
     console.log("Error en el login:", error);
 
