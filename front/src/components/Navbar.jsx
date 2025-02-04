@@ -23,9 +23,9 @@ const Navbar = () => {
     <div>
       <nav className={nav}>
         <Link to={"/home"}>Home </Link>
-        <Link>Our Services </Link>
-        <Link> Our Story </Link>
-        <Link> Contact us </Link>
+        <Link to={"/nuestrosservicios"}>Nuestros Servicios </Link>
+        <Link to={"nuestrahistoria"}> Nuestra Historia </Link>
+        <Link to={"/contact"}> Contacto </Link>
 
         <button onClick={handleLoginClick} className={navButton}>
           Login

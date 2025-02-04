@@ -1,0 +1,29 @@
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 20px 20px 20px;
+  width: 90vw;
+  height: 100px;
+  background-color: #99d9d9;
+}
+.navButton {
+  width: 100px;
+  height: 30px;
+  border-radius: 10px;
+  background-color: #51b6b6;
+}
+.navButton:hover {
+  background-color: #338a8a;
+}
+.nav a {
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
+.nav a:hover {
+  color: #009688;
+}

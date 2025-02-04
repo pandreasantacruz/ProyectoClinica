@@ -4,7 +4,7 @@ import { validate } from "../helpers/validate";
 const Login = ({ handleLoginOnClose }) => {
   const [userDataLogin, setUserDataLogin] = useState({
     username: "",
-    password: "",
+    newPassword: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -31,7 +31,7 @@ const Login = ({ handleLoginOnClose }) => {
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    setTouched({ username: true, password: true });
+    setTouched({ username: true, newPassword: true });
 
     const newErrors = validate(userDataLogin);
     setErrors(newErrors);
@@ -77,13 +77,15 @@ const Login = ({ handleLoginOnClose }) => {
         <label> Contraseña</label>
         <input
           type="password"
-          value={userDataLogin.password}
-          name="password"
+          value={userDataLogin.newPassword}
+          name="newPassword"
           placeholder="Contraseña"
           onChange={handleInputChangeLogin}
           onBlur={handleBlur}
         />
-        {touched.password && errors.password && <p>{errors.password}</p>}
+        {touched.newPassword && errors.newPassword && (
+          <p>{errors.newPassword}</p>
+        )}
       </div>
 
       <button>Log in</button>
