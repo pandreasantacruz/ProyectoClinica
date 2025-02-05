@@ -5,6 +5,7 @@ import {
   getUserByIdService,
   loginService,
 } from "../service/user";
+import { AppDataSource } from "../config/data-source";
 import { saveCredentials } from "../service/credentialService";
 import { User } from "../entities/user";
 
@@ -15,6 +16,10 @@ export const createUser = async (
   try {
     const { name, email, birthday, nDniType, nDni, username, newPassword } =
       req.body;
+    const newCredentials = await saveCredentials({
+      username,
+      newPassword,
+    });
     const newUser: User = await createUserService({
       name,
       email,
@@ -23,12 +28,9 @@ export const createUser = async (
       nDni,
       username,
       newPassword,
+      credentials: newCredentials,
     });
-    const newCredentials = await saveCredentials({
-      username,
-      newPassword,
-      userId: newUser.id,
-    });
+
     res
       .status(201)
       .json({ message: "User created successfully", newUser, newCredentials });
@@ -62,26 +64,17 @@ export const getUserById = async (req: Request, res: Response) => {
       .json({ message: "An error occurred while retrieving the user", error });
   }
 };
-export const loginController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const loginController = async (req: Request, res: Response) => {
   try {
     const { email, newPassword } = req.body;
-    const user = await loginService(email, newPassword);
-    if (!user) {
-      res.status(404).json({
-        message: "Invalid credentials or user not found.",
-      });
-      return;
-    }
-    res.status(200).json({
-      message: "Login Susccesful",
-      user,
-    });
+    const response = await loginService(email, newPassword);
+
+    res.status(200).json(response);
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "An error occurred while retrieving the user", error });
+    if (error instanceof Error) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(400).json({ message: "An unexpected error occurred" });
+    }
   }
 };

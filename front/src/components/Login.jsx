@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { validate } from "../helpers/validate";
+import {
+  title,
+  loginButton,
+  loginConteiner,
+  inputGroup,
+  inputLabel,
+  inputField,
+  buttonContainer,
+} from "../styles/Login.module.css";
 
 const Login = ({ handleLoginOnClose }) => {
   const [userDataLogin, setUserDataLogin] = useState({
-    username: "",
+    email: "",
     newPassword: "",
   });
 
@@ -29,53 +38,60 @@ const Login = ({ handleLoginOnClose }) => {
     setErrors(validate(userDataLogin));
   };
 
-  const handleOnSubmit = (event) => {
+  const handleOnSubmit = async (event) => {
     event.preventDefault();
-    setTouched({ username: true, newPassword: true });
+    setTouched({ email: true, newPassword: true });
 
     const newErrors = validate(userDataLogin);
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      alert(` Te haz Logeado con el Usuario: ${userDataLogin.username}`);
+      try {
+        const response = await fetch("http://localhost:3000/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userDataLogin),
+        });
 
-      const userDataToSend = {
-        ...userDataLogin,
-      };
+        const data = await response.json();
 
-      fetch("http://localhost:3000/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDataToSend),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log("Respuesta del backend:", data))
-        .catch((error) => console.error("Error:", error));
+        if (!response.ok) {
+          throw new Error(data.message || "Error al iniciar sesión");
+        }
+
+        console.log("Respuesta del backend:", data);
+        alert("Inicio de sesión exitoso");
+      } catch (error) {
+        alert(error.message);
+        console.error("Error:", error);
+      }
     } else {
       alert("Por favor, completa todos los campos correctamente.");
     }
   };
   return (
-    <form onSubmit={handleOnSubmit}>
-      <h2>Login</h2>
-      <div>
-        <label> Email:</label>
+    <form className={loginConteiner} onSubmit={handleOnSubmit}>
+      <h2 className={title}>Log in</h2>
+      <div className={inputGroup}>
+        <label className={inputLabel}> Email:</label>
         <input
+          className={inputField}
           type="text"
-          value={userDataLogin.username}
-          name="username"
+          value={userDataLogin.email}
+          name="email"
           placeholder="example@mail.com"
           onChange={handleInputChangeLogin}
           onBlur={handleBlur}
         />
-        {touched.username && errors.username && <p>{errors.username}</p>}
+        {touched.email && errors.email && <p>{errors.email}</p>}
       </div>
 
-      <div>
-        <label> Contraseña</label>
+      <div className={inputGroup}>
+        <label className={inputLabel}> Contraseña:</label>
         <input
+          className={inputField}
           type="password"
           value={userDataLogin.newPassword}
           name="newPassword"
@@ -87,9 +103,12 @@ const Login = ({ handleLoginOnClose }) => {
           <p>{errors.newPassword}</p>
         )}
       </div>
-
-      <button>Log in</button>
-      <button onClick={handleLoginOnClose}>Cerrar</button>
+      <div className={buttonContainer}>
+        <button className={loginButton}>Log in</button>
+        <button onClick={handleLoginOnClose} className={loginButton}>
+          Cerrar
+        </button>
+      </div>
     </form>
   );
 };

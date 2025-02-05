@@ -4,11 +4,12 @@ export const createAppointmentMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const { id, date, time, status, medicalHistory, reasonConsultation, userId } =
+): void => {
+  const { id, date, time, medicalHistory, reasonConsultation, userId } =
     req.body;
-  if (!date || !time || !medicalHistory || !reasonConsultation || !userId) {
+  if (!date || !time || !medicalHistory || !reasonConsultation) {
     res.status(400).json({ message: "All fields are required." });
+    return;
   }
   next();
 };

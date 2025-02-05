@@ -1,0 +1,26 @@
+.seccion {
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  text-align: justify;
+  transition: transform 0.3s ease;
+}
+.seccion:hover {
+  transform: scale(1.1);
+}
+.titulos {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+.parrafo {
+  padding: 10px;
+  font-size: 15px;
+  color: black;
+}
+
+.imagenes {
+  max-width: 256px;
+  aspect-ratio: 1.1;
+}

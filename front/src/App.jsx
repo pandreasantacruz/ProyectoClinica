@@ -7,7 +7,7 @@ import OurStory from "./views/OurStory";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-//import Misturnos from "./views/Misturnos";
+import Misturnos from "./views/Misturnos";
 import Contact from "./views/Contact";
 
 function App() {
@@ -25,6 +25,15 @@ function App() {
         <Route path="/login" element={<Login></Login>} />
         <Route path="/home" element={<Home></Home>} />
         <Route path="/" element={<Home></Home>} />
+        <Route path="/appointments" element={<Misturnos></Misturnos>} />
+        <Route
+          path="*"
+          element={
+            <h1>
+              <strong>Error 404 page not found</strong>
+            </h1>
+          }
+        />
       </Routes>
       <Footer />
     </>

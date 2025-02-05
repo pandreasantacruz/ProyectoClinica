@@ -1,3 +1,5 @@
+import { Credentials } from "../entities/credentials";
+
 interface UserDto {
   name: string;
   email: string;
@@ -6,5 +8,6 @@ interface UserDto {
   nDni: number;
   newPassword: string;
   username: string;
+  credentials: Credentials;
 }
 export default UserDto;

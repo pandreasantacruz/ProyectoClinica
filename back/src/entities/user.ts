@@ -35,7 +35,7 @@ export class User {
   nDni: number;
 
   @OneToOne(() => Credentials)
-  @JoinColumn()
+  @JoinColumn({ name: "credentialsId" })
   credentials: Credentials;
 
   @OneToMany(() => Appointments, (appointments) => appointments.user)

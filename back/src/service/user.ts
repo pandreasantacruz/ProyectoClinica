@@ -63,22 +63,26 @@ export const getUserByIdService = async (
 };
 export const loginService = async (email: string, password: string) => {
   try {
-    const user = await AppDataSource.getRepository(User).findOneBy({ email });
+    const user = await AppDataSource.getRepository(User).findOne({
+      where: { email },
+      relations: ["credentials"],
+    });
 
     if (!user) {
-      return { error: "User not found", statusCode: 404 };
+      throw new Error("User not found");
     }
+
     if (!user.credentials || !user.credentials.newPassword) {
-      return { error: "User credentials not set", statusCode: 400 };
+      throw new Error("User credentials not set");
     }
+
     if (user.credentials.newPassword !== password) {
-      return { error: "Incorrect password", statusCode: 400 };
+      throw new Error("Incorrect password");
     }
 
-    return { message: "User Log in succesfully", user };
+    return { message: "User logged in successfully", user };
   } catch (error) {
-    console.log("Error en el login:", error);
-
-    return { error: "Error to login", statusCode: 400 };
+    console.error("Error in loginService:", error);
+    throw error;
   }
 };

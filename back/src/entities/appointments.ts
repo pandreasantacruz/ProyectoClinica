@@ -1,5 +1,11 @@
 import { text } from "stream/consumers";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+} from "typeorm";
 import { User } from "./user";
 import status from "../interface/emutStatus";
 
@@ -22,9 +28,8 @@ export class Appointments {
 
   @Column("text")
   reasonConsultation: string;
-  @Column()
-  userId: number;
 
   @ManyToOne(() => User, (user) => user.appointments)
+  @JoinColumn({ name: "userId" })
   user: User;
 }

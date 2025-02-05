@@ -26,6 +26,7 @@ const Navbar = () => {
         <Link to={"/nuestrosservicios"}>Nuestros Servicios </Link>
         <Link to={"nuestrahistoria"}> Nuestra Historia </Link>
         <Link to={"/contact"}> Contacto </Link>
+        <Link to={"/appointments"}> Mis Citas </Link>
 
         <button onClick={handleLoginClick} className={navButton}>
           Login

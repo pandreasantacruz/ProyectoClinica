@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { validateRegister } from "../helpers/validateRegister";
+import {
+  title,
+  registerButton,
+  buttonContainer,
+  registerConteiner,
+  inputGroup,
+  inputLabel,
+  inputField,
+} from "../styles/Register.module.css";
 
 const Register = ({ handleOnClose }) => {
   const [userDataRegister, setUserDataRegister] = useState({
@@ -78,11 +87,12 @@ const Register = ({ handleOnClose }) => {
   };
 
   return (
-    <form onSubmit={handleOnSubmit}>
-      <h2>Register</h2>
-      <div>
-        <label>Nombre: </label>
+    <form className={registerConteiner} onSubmit={handleOnSubmit}>
+      <h2 className={title}>Registrate</h2>
+      <div className={inputGroup}>
+        <label className={inputLabel}>Nombre: </label>
         <input
+          className={inputField}
           type="text"
           value={userDataRegister.name}
           name="name"
@@ -93,9 +103,10 @@ const Register = ({ handleOnClose }) => {
         {touched.name && errors.name && <p>{errors.name}</p>}
       </div>
 
-      <div>
-        <label> Email:</label>
+      <div className={inputGroup}>
+        <label className={inputLabel}> Email:</label>
         <input
+          className={inputField}
           type="text"
           value={userDataRegister.email}
           name="email"
@@ -106,9 +117,10 @@ const Register = ({ handleOnClose }) => {
         {touched.email && errors.email && <p>{errors.email}</p>}
       </div>
 
-      <div>
-        <label> Fecha de Nacimiento:</label>
+      <div className={inputGroup}>
+        <label className={inputLabel}> Fecha de Nacimiento:</label>
         <input
+          className={inputField}
           type="date"
           value={userDataRegister.birthday}
           name="birthday"
@@ -119,9 +131,10 @@ const Register = ({ handleOnClose }) => {
         {touched.birthday && errors.birthday && <p>{errors.birthday}</p>}
       </div>
 
-      <div>
-        <label> Tipo de Documento de Identidad:</label>
+      <div className={inputGroup}>
+        <label className={inputLabel}> Tipo de Documento de Identidad:</label>
         <select
+          className={inputField}
           value={userDataRegister.nDniType}
           onChange={(e) => handleInputChangeRegister(e)}
           type="string"
@@ -141,9 +154,10 @@ const Register = ({ handleOnClose }) => {
         {touched.nDniType && errors.nDniType && <p>{errors.nDniType}</p>}
       </div>
 
-      <div>
-        <label> Numero de Documento:</label>
+      <div className={inputGroup}>
+        <label className={inputLabel}> Numero de Documento:</label>
         <input
+          className={inputField}
           type="number"
           value={userDataRegister.nDni}
           name="nDni"
@@ -154,9 +168,10 @@ const Register = ({ handleOnClose }) => {
         {touched.nDni && errors.nDni && <p>{errors.nDni}</p>}
       </div>
 
-      <div>
-        <label> Contraseña</label>
+      <div className={inputGroup}>
+        <label className={inputLabel}> Contraseña</label>
         <input
+          className={inputField}
           type="password"
           value={userDataRegister.newPassword}
           name="newPassword"
@@ -168,8 +183,12 @@ const Register = ({ handleOnClose }) => {
           <p>{errors.newPassword}</p>
         )}
       </div>
-      <button>Registrarse</button>
-      <button onClick={handleOnClose}>Cerrar</button>
+      <div className={buttonContainer}>
+        <button className={registerButton}>Registrarse</button>
+        <button onClick={handleOnClose} className={registerButton}>
+          Cerrar
+        </button>
+      </div>
     </form>
   );
 };
