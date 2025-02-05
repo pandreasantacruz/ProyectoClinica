@@ -27,13 +27,20 @@ const Navbar = () => {
         <Link to={"nuestrahistoria"}> Nuestra Historia </Link>
         <Link to={"/contact"}> Contacto </Link>
         <Link to={"/appointments"}> Mis Citas </Link>
+        <Link to={"appointments/schedule"}>Pedir Cita</Link>
 
-        <button onClick={handleLoginClick} className={navButton}>
-          Login
-        </button>
-        <button onClick={handlerRegisterClick} className={navButton}>
-          Register
-        </button>
+        <Link to={"/login"}>
+          {" "}
+          <button onClick={handleLoginClick} className={navButton}>
+            Login
+          </button>
+        </Link>
+        <Link to={"/register"}>
+          {" "}
+          <button onClick={handlerRegisterClick} className={navButton}>
+            Register
+          </button>
+        </Link>
       </nav>
       {showRegister && <Register handleOnClose={handleOnClose} />}
       {showLogin && <Login handleLoginOnClose={handleLoginOnClose} />}

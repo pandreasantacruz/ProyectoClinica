@@ -1,6 +1,7 @@
 import AppointmentDto from "../dto/appointmentDto";
 import { AppDataSource } from "../config/data-source";
 import { Appointments } from "../entities/appointments";
+import { User } from "../entities/user";
 // const appointments: IAppointment[] = [
 // {
 //   id: 1,
@@ -80,10 +81,25 @@ export const createAppointmentService = async (
   userData: AppointmentDto
 ): Promise<Appointments> => {
   try {
-    const newAppointment = AppDataSource.getRepository(Appointments).create({
-      ...userData,
+    const appointmentRepository = AppDataSource.getRepository(Appointments);
+    const userRepository = AppDataSource.getRepository(User);
+
+    const user = await userRepository.findOneBy({ id: userData.userId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const newAppointment = appointmentRepository.create({
+      date: userData.date,
+      time: userData.time,
+      medicalHistory: userData.medicalHistory,
+      reasonConsultation: userData.reasonConsultation,
+      user: user,
     });
-    await AppDataSource.getRepository(Appointments).save(newAppointment);
+
+    await appointmentRepository.save(newAppointment);
+
     return newAppointment;
   } catch (error) {
     console.log("Error create Appointment Service", error);

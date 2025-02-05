@@ -52,8 +52,9 @@ export const getUserByIdService = async (
   userId: number
 ): Promise<User | null> => {
   try {
-    const user = await AppDataSource.getRepository(User).findOneBy({
-      id: userId,
+    const user = await AppDataSource.getRepository(User).findOne({
+      where: { id: userId },
+      relations: ["appointments"],
     });
     return user || null;
   } catch (error) {

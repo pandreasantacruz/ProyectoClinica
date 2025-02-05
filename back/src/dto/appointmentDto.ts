@@ -4,7 +4,7 @@ interface AppointmentDto {
   time: string;
   medicalHistory: string;
   reasonConsultation: string;
-  userId: number;
+  userId?: number;
 }
 
 export default AppointmentDto;

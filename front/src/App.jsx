@@ -7,8 +7,9 @@ import OurStory from "./views/OurStory";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Misturnos from "./views/Misturnos";
+import { Misturnos } from "./views/Misturnos";
 import Contact from "./views/Contact";
+import PedirTurno from "./views/PedirTurno";
 
 function App() {
   return (
@@ -26,6 +27,10 @@ function App() {
         <Route path="/home" element={<Home></Home>} />
         <Route path="/" element={<Home></Home>} />
         <Route path="/appointments" element={<Misturnos></Misturnos>} />
+        <Route
+          path="appointments/schedule"
+          element={<PedirTurno></PedirTurno>}
+        />
         <Route
           path="*"
           element={
