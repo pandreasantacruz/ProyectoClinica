@@ -1,5 +1,10 @@
 import { people } from "../helpers/People";
-import { seccion, titulos, parrafo } from "../styles/OurServices.module.css";
+import {
+  seccion,
+  titulos,
+  parrafo,
+  imagenes,
+} from "../styles/OurServices.module.css";
 
 function OurServices() {
   return (
@@ -10,7 +15,7 @@ function OurServices() {
             <img
               alt=""
               src={person.imageUrl}
-              className={`max-w-[350px] h-auto flex-none ${seccion}`}
+              className={`max-w-[350px] h-auto flex-none ${imagenes}`}
             />
             <div className="min-w-0 flex-auto">
               <p className={`text-sm/6 font-semibold text-gray-900 ${titulos}`}>

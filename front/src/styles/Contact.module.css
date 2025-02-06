@@ -1,5 +1,8 @@
 .conteiner {
   font-family: "Roboto", sans-serif;
   max-width: 90vw;
-  margin: 20px 30px 20px 28px;
+  margin: 20px 10px 20px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }

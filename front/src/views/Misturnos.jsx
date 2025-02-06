@@ -1,32 +1,27 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Card } from "../components/Card";
-import axios from "axios";
+//import axios from "axios";
+import { useContext } from "react";
+import { UserContext } from "../context/context";
+import styles from "../styles/Misturnos.module.css";
 
 export const Misturnos = () => {
-  const [turnos, setTurnos] = useState([]);
+  const { userAppointment, fetchAppointments } = useContext(UserContext);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/appointments")
-      .then((res) => {
-        console.log(res);
-        setTurnos(res.data.appointments);
-      })
-      .catch((err) => console.log(err, "Error al cargar datos"));
+    fetchAppointments(); // Llamamos siempre que el usuario esté logueado y no se esté cargando ya
   }, []);
-  const handleCancel = (id) => {
-    setTurnos((prevTurnos) =>
-      prevTurnos.map((turno) =>
-        turno.id === id ? { ...turno, status: "cancelled" } : turno
-      )
-    );
-  };
+  useEffect(() => {
+    console.log(userAppointment, "hOLAAAAAAA"); // Verifica que los datos sean correctos
+  }, [userAppointment]);
 
   return (
     <div>
-      {turnos.map((turno) => {
-        return <Card key={turno.id} {...turno} onCancel={handleCancel} />;
-      })}
+      {userAppointment.length > 0 ? (
+        userAppointment.map((turno) => <Card key={turno.id} {...turno} />)
+      ) : (
+        <p className={styles.title}>Aún no tienes turnos agendados.</p>
+      )}
     </div>
   );
 };

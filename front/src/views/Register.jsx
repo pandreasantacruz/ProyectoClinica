@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useUser } from "../context/useUser";
 import { validateRegister } from "../helpers/validateRegister";
 import {
   title,
@@ -9,8 +10,10 @@ import {
   inputLabel,
   inputField,
 } from "../styles/Register.module.css";
+import { useNavigate } from "react-router-dom"; // Para redirigir
 
-const Register = ({ handleOnClose }) => {
+const Register = () => {
+  const { setUser } = useUser();
   const [userDataRegister, setUserDataRegister] = useState({
     name: "",
     email: "",
@@ -24,6 +27,8 @@ const Register = ({ handleOnClose }) => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
+  const navigate = useNavigate(); // Hook para navegación
+
   const handleInputChangeRegister = (event) => {
     const { name, value } = event.target;
 
@@ -33,22 +38,26 @@ const Register = ({ handleOnClose }) => {
     });
 
     if (touched[name]) {
-      setErrors(validateRegister(setUserDataRegister));
+      setErrors(validateRegister(userDataRegister));
     }
+
     if (name === "email") {
       setUserDataRegister({
         ...userDataRegister,
+        email: value,
         username: value,
       });
     }
   };
+
   const handleBlur = (event) => {
     const { name } = event.target;
     setTouched({ ...touched, [name]: true });
 
     setErrors(validateRegister(userDataRegister));
   };
-  const handleOnSubmit = (event) => {
+
+  const handleOnSubmit = async (event) => {
     event.preventDefault();
 
     setTouched({
@@ -65,30 +74,58 @@ const Register = ({ handleOnClose }) => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      alert(`Te has registrado con el usuario: ${userDataRegister.username}`);
+      try {
+        alert(`Te has registrado con el usuario: ${userDataRegister.username}`);
 
-      const userDataToSend = {
-        ...userDataRegister,
-        username: userDataRegister.email,
-      };
-      fetch("http://localhost:3000/users/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDataToSend),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log("Respuesta del backend:", data))
-        .catch((error) => console.error("Error:", error));
+        const userDataToSend = {
+          ...userDataRegister,
+          username: userDataRegister.email, // El backend usa el email como username
+        };
+
+        // Hacemos la petición para registrar al usuario
+        const response = await fetch("http://localhost:3000/users/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userDataToSend),
+        });
+        console.log(userDataToSend, "es el user data que se envia");
+        const data = await response.json();
+        console.log("Respuesta del backend:", data);
+
+        // Ahora hacemos el login automático
+        const loginResponse = await fetch("http://localhost:3000/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: userDataToSend.email,
+            newPassword: userDataToSend.newPassword,
+            id: data.newUser.id,
+          }),
+        });
+        const loginData = await loginResponse.json();
+        console.log("Usuario logueado:", loginData);
+        // Guardar usuario en el contexto global
+        setUser(loginData.user);
+
+        // Redirigir al home después del login
+        navigate("/home");
+      } catch (error) {
+        console.error("Error en el registro o login automático:", error);
+        alert("Hubo un error, intenta nuevamente.");
+      }
     } else {
       alert("Por favor, completa todos los campos correctamente.");
     }
   };
-
+  const today = new Date().toISOString().split("T")[0];
   return (
     <form className={registerConteiner} onSubmit={handleOnSubmit}>
-      <h2 className={title}>Registrate</h2>
+      <h2 className={title}>Regístrate</h2>
+
       <div className={inputGroup}>
         <label className={inputLabel}>Nombre: </label>
         <input
@@ -104,7 +141,7 @@ const Register = ({ handleOnClose }) => {
       </div>
 
       <div className={inputGroup}>
-        <label className={inputLabel}> Email:</label>
+        <label className={inputLabel}>Email:</label>
         <input
           className={inputField}
           type="text"
@@ -118,7 +155,7 @@ const Register = ({ handleOnClose }) => {
       </div>
 
       <div className={inputGroup}>
-        <label className={inputLabel}> Fecha de Nacimiento:</label>
+        <label className={inputLabel}>Fecha de Nacimiento:</label>
         <input
           className={inputField}
           type="date"
@@ -127,17 +164,17 @@ const Register = ({ handleOnClose }) => {
           placeholder="YYYY-MM-DD"
           onChange={handleInputChangeRegister}
           onBlur={handleBlur}
+          max={today}
         />
         {touched.birthday && errors.birthday && <p>{errors.birthday}</p>}
       </div>
 
       <div className={inputGroup}>
-        <label className={inputLabel}> Tipo de Documento de Identidad:</label>
+        <label className={inputLabel}>Tipo de Documento:</label>
         <select
           className={inputField}
           value={userDataRegister.nDniType}
           onChange={(e) => handleInputChangeRegister(e)}
-          type="string"
           name="nDniType"
           onBlur={handleBlur}
         >
@@ -147,7 +184,7 @@ const Register = ({ handleOnClose }) => {
           <option value="Cédula ciudadanía">Cédula ciudadanía</option>
           <option value="Pasaporte">Pasaporte</option>
           <option value="Tarjeta extranjería">Tarjeta extranjería</option>
-          <option value=" Permiso especial de permanencia">
+          <option value="Permiso especial de permanencia">
             Permiso especial de permanencia
           </option>
         </select>
@@ -155,7 +192,7 @@ const Register = ({ handleOnClose }) => {
       </div>
 
       <div className={inputGroup}>
-        <label className={inputLabel}> Numero de Documento:</label>
+        <label className={inputLabel}>Número de Documento:</label>
         <input
           className={inputField}
           type="number"
@@ -169,7 +206,7 @@ const Register = ({ handleOnClose }) => {
       </div>
 
       <div className={inputGroup}>
-        <label className={inputLabel}> Contraseña</label>
+        <label className={inputLabel}>Contraseña</label>
         <input
           className={inputField}
           type="password"
@@ -183,13 +220,12 @@ const Register = ({ handleOnClose }) => {
           <p>{errors.newPassword}</p>
         )}
       </div>
+
       <div className={buttonContainer}>
         <button className={registerButton}>Registrarse</button>
-        <button onClick={handleOnClose} className={registerButton}>
-          Cerrar
-        </button>
       </div>
     </form>
   );
 };
+
 export default Register;

@@ -2,6 +2,7 @@ import AppointmentDto from "../dto/appointmentDto";
 import { AppDataSource } from "../config/data-source";
 import { Appointments } from "../entities/appointments";
 import { User } from "../entities/user";
+import { parse } from "path";
 // const appointments: IAppointment[] = [
 // {
 //   id: 1,
@@ -50,11 +51,13 @@ import { User } from "../entities/user";
 // },
 // ];
 
-export const getAppointmentsService = async (): Promise<Appointments[]> => {
+export const getAppointmentsService = async (
+  userid: number
+): Promise<Appointments[]> => {
   try {
-    const appointments = await AppDataSource.getTreeRepository(
-      Appointments
-    ).find();
+    const appointments = await AppDataSource.getRepository(Appointments).find({
+      where: { user: { id: userid } },
+    });
     return appointments;
   } catch (error) {
     console.log("Error at Appointments Service", error);
@@ -84,7 +87,7 @@ export const createAppointmentService = async (
     const appointmentRepository = AppDataSource.getRepository(Appointments);
     const userRepository = AppDataSource.getRepository(User);
 
-    const user = await userRepository.findOneBy({ id: userData.userId });
+    const user = await userRepository.findOneBy({ id: userData.userid });
 
     if (!user) {
       throw new Error("User not found");
@@ -95,7 +98,7 @@ export const createAppointmentService = async (
       time: userData.time,
       medicalHistory: userData.medicalHistory,
       reasonConsultation: userData.reasonConsultation,
-      user: user,
+      user: { id: userData.userid },
     });
 
     await appointmentRepository.save(newAppointment);

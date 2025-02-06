@@ -1,13 +1,13 @@
-export const validate = (input) => {
-  const errors = {};
-  if (!input.email.trim()) {
-    errors.email = "Username es requerido";
-  } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(input.email)) {
-    errors.email = "Formato invalido de email ";
+export const validate = (values) => {
+  let errors = {};
+
+  if (!values.email || values.email.trim() === "") {
+    errors.email = "El email es obligatorio";
   }
 
-  if (!input.newPassword.trim()) {
-    errors.newPassword = "Contraseña es requerido";
+  if (!values.newPassword || values.newPassword.trim() === "") {
+    errors.newPassword = "La contraseña es obligatoria";
   }
+
   return errors;
 };

@@ -32,4 +32,6 @@ export class Appointments {
   @ManyToOne(() => User, (user) => user.appointments)
   @JoinColumn({ name: "userId" })
   user: User;
+  @Column()
+  userId: number;
 }

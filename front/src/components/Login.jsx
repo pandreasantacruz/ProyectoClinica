@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { validate } from "../helpers/validate";
+import { useContext } from "react";
+import { UserContext } from "../context/context";
+import { useNavigate } from "react-router-dom";
 import {
   title,
   loginButton,
@@ -10,11 +13,13 @@ import {
   buttonContainer,
 } from "../styles/Login.module.css";
 
-const Login = ({ handleLoginOnClose }) => {
+const Login = () => {
+  const { login } = useContext(UserContext);
   const [userDataLogin, setUserDataLogin] = useState({
     email: "",
     newPassword: "",
   });
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -24,13 +29,19 @@ const Login = ({ handleLoginOnClose }) => {
 
     setUserDataLogin({
       ...userDataLogin,
-      [name]: value, //En la propiedad que sea name guardo el value
+      [name]: value,
     });
 
     if (touched[name]) {
-      setErrors(validate(setUserDataLogin));
+      setErrors(
+        validate({
+          email: userDataLogin.email || "",
+          newPassword: userDataLogin.newPassword || "",
+        })
+      );
     }
   };
+
   const handleBlur = (event) => {
     const { name } = event.target;
     setTouched({ ...touched, [name]: true });
@@ -47,6 +58,8 @@ const Login = ({ handleLoginOnClose }) => {
 
     if (Object.keys(newErrors).length === 0) {
       try {
+        console.log("Datos a enviar:", userDataLogin); // Imprimir los datos
+
         const response = await fetch("http://localhost:3000/users/login", {
           method: "POST",
           headers: {
@@ -55,22 +68,29 @@ const Login = ({ handleLoginOnClose }) => {
           body: JSON.stringify(userDataLogin),
         });
 
-        const data = await response.json();
+        if (response.ok) {
+          const userData = await response.json();
+          console.log("Respuesta del servidor:", userData); // Ver los datos recibidos
 
-        if (!response.ok) {
-          throw new Error(data.message || "Error al iniciar sesión");
+          if (userData.user && userData.user.id) {
+            // Verifica si 'user' y 'id' existen
+            login(userData.user); // Pasa 'user' al contexto
+            navigate(`/appointments/${userData.user.id}`); // Redirige con el 'id' correcto
+            alert("Ahora puedes ver tus citas");
+          } else {
+            alert("Credenciales incorrectas");
+          }
+        } else {
+          alert("Credenciales incorrectas");
         }
-
-        console.log("Respuesta del backend:", data);
-        alert("Inicio de sesión exitoso");
       } catch (error) {
-        alert(error.message);
-        console.error("Error:", error);
+        console.error("Error en el login:", error);
       }
     } else {
       alert("Por favor, completa todos los campos correctamente.");
     }
   };
+
   return (
     <form className={loginConteiner} onSubmit={handleOnSubmit}>
       <h2 className={title}>Log in</h2>
@@ -103,13 +123,12 @@ const Login = ({ handleLoginOnClose }) => {
           <p>{errors.newPassword}</p>
         )}
       </div>
+
       <div className={buttonContainer}>
         <button className={loginButton}>Log in</button>
-        <button onClick={handleLoginOnClose} className={loginButton}>
-          Cerrar
-        </button>
       </div>
     </form>
   );
 };
+
 export default Login;

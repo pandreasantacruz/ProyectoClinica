@@ -7,24 +7,18 @@ import {
   cancelAppointmentService,
 } from "../service/appointmentService";
 import { Appointments } from "../entities/appointments";
+import { promises } from "dns";
 
 export const createAppointment = async (req: Request, res: Response) => {
   try {
-    const {
-      id,
-      date,
-      time,
-      status,
-      medicalHistory,
-      reasonConsultation,
-      userId,
-    } = req.body;
+    const { date, time, medicalHistory, reasonConsultation } = req.body;
+    const { userId } = req.params;
     const dataAppointment: AppointmentDto = {
       date,
       time,
       medicalHistory,
       reasonConsultation,
-      userId,
+      userid: parseInt(userId),
     };
     const newAppointment = await createAppointmentService(dataAppointment);
     res
@@ -35,20 +29,33 @@ export const createAppointment = async (req: Request, res: Response) => {
     res.status(400).json({ message: "Error creating appointment.", error });
   }
 };
-export const getAppointments = async (req: Request, res: Response) => {
+export const getAppointments = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const appointments: Appointments[] = await getAppointmentsService();
+    const userIdParam = req.params.userId; // el userId desde los parámetros de la ruta
+    const userId = Number(userIdParam);
+    const appointments: Appointments[] = await getAppointmentsService(userId);
+
+    if (appointments.length === 0) {
+      res.status(200).json({
+        message: "No appointments found for this user",
+        appointments: [],
+      });
+      return;
+    }
     res
       .status(200)
       .json({ message: "Appointments retrieved successfully", appointments });
   } catch (error) {
-    console.log("Error Controller get User", error);
-    res.status(404).json({ message: "Appointments not found", error });
+    console.log("Error Controller get Appointments", error);
+    res.status(500).json({ message: "Error retrieving appointments", error });
   }
 };
 export const getAppointmentById = async (req: Request, res: Response) => {
   try {
-    const appointmentIdParam = req.params.id; //Obtener el userId desde los parámetros de la ruta
+    const appointmentIdParam = req.params.Id; //Obtener el userId desde los parámetros de la ruta
     const appointmentId = Number(appointmentIdParam); //convertirlo en un número
     const appointment = await getAppointmentByIdService(appointmentId); // Llamar a la función con el id
     res

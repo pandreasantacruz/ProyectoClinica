@@ -10,11 +10,11 @@ import {
 const appointmentRouter: Router = Router();
 
 appointmentRouter.post(
-  "/schedule",
+  "/schedule/:userId",
   createAppointmentMiddleware,
   createAppointment
 );
-appointmentRouter.get("/", getAppointments);
+appointmentRouter.get("/:userId", getAppointments);
 appointmentRouter.get("/:id", getAppointmentById);
 appointmentRouter.put("/cancel/:id", cancelAppointmentController);
 

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "../context/context";
 import { title, cancelarButton, conteiner } from "../styles/Card.module.css";
 
 export const Card = ({
@@ -9,45 +10,20 @@ export const Card = ({
   id,
   status,
 }) => {
-  // Definir el estado fuera de la función
+  const { cancelAppointment } = useContext(UserContext); // Usamos contexto
   const [appointmentStatus, setAppointmentStatus] = useState(
     status || "active"
   );
 
-  const cancelAppointment = async (id) => {
-    if (!id || typeof id !== "number") {
-      console.error("Error: appointmentId no válido", id);
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:3000/appointments/cancel/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Cita cancelada exitosamente");
-        setAppointmentStatus("cancelled"); // Actualizamos el estado de la cita
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error("Error al cancelar la cita:", error);
-    }
+  const handleCancel = async () => {
+    await cancelAppointment(id);
+    setAppointmentStatus("cancelled"); // Actualizar estado local
   };
 
   return (
     <div
       className={conteiner}
-      style={{ opacity: appointmentStatus === "cancelled" ? 0.5 : 1 }} // Cambiar a `appointmentStatus`
+      style={{ opacity: appointmentStatus === "cancelled" ? 0.5 : 1 }}
     >
       <h2 className={title}>Cita: {id}</h2>
       <h4>Fecha: {date}</h4>
@@ -57,7 +33,7 @@ export const Card = ({
       <h4>Razón de Consulta: {reasonConsultation}</h4>
       <button
         className={cancelarButton}
-        onClick={() => cancelAppointment(id)}
+        onClick={handleCancel}
         disabled={appointmentStatus === "cancelled"}
       >
         {appointmentStatus === "cancelled" ? "Cancelada" : "Cancelar"}
