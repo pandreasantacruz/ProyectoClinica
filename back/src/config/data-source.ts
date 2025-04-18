@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
   username: USERNAME,
   password: PASSWORD,
   database: DATABASE,
-  //dropSchema: true, //para borrar base de datos cuando este en true
+  //dropSchema: true, //para borrar base de datos cuando este en trueholla
   synchronize: true,
   logging: true,
   entities: [User, Appointments, Credentials],
